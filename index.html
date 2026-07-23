@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>등대독서회 - (주)제주비 사내 독서 커뮤니티</title>
+    
+    <!-- Noto Sans KR 폰트 로드 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons (아이콘 라이브러리) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Marked.js (Gemini 마크다운 렌더링용) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Tailwind CSS 로드 및 설정 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans KR"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#1B263B',
+                            blue: '#415A77',
+                            light: '#E0E1DD',
+                            yellow: '#FFC300',
+                            accent: '#3B82F6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .glass-header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+        }
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(27,38,59,0.92) 0%, rgba(65,90,119,0.9) 100%), 
+                        url('https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?q=80&w=2574&auto=format&fit=crop') center/cover;
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .ai-glow {
+            box-shadow: 0 0 25px rgba(255, 195, 0, 0.25);
+        }
+        /* 마크다운 스타일링 */
+        .prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; color: #1B263B; }
+        .prose h4 { font-size: 1.1rem; font-weight: 600; margin-top: 0.75rem; color: #415A77; }
+        .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 0.75rem; }
+        .prose ol { list-style-type: decimal; padding-left: 1.25rem; margin-bottom: 0.75rem; }
+        .prose li { margin-bottom: 0.375rem; }
+        .prose p { margin-bottom: 0.75rem; line-height: 1.6; }
+        .prose strong { color: #1B263B; font-weight: 700; }
+        .prose blockquote { border-left: 4px solid #FFC300; padding-left: 1rem; color: #4B5563; font-style: italic; margin-y: 0.75rem; }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased bg-gray-50 relative">
+
+    <!-- 1. 헤더 (Header) -->
+    <header class="fixed w-full top-0 z-50 glass-header border-b border-gray-200 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- 로고 -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="flex items-center gap-2 group">
+                        <i class="ph-fill ph-lighthouse text-3xl text-brand-blue group-hover:text-brand-yellow transition-colors"></i>
+                        <span class="font-bold text-xl tracking-tight text-brand-navy">등대독서회</span>
+                    </a>
+                </div>
+                
+                <!-- PC 네비게이션 -->
+                <nav class="hidden md:flex space-x-6 lg:space-x-8 items-center">
+                    <a href="#about" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">소개</a>
+                    <a href="#meeting" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">모임 안내</a>
+                    <a href="#activities" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">활동 내용</a>
+                    <a href="#ai-assistant" class="text-brand-blue font-bold hover:text-brand-navy transition-colors flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 text-sm">
+                        <i class="ph-bold ph-sparkle text-brand-yellow"></i> AI 독서 도우미
+                    </a>
+                    <a href="#benefits" class="text-gray-600 hover:text-brand-blue font-medium transition-colors">혜택</a>
+                </nav>
+                
+                <!-- 가입 버튼 (PC) -->
+                <div class="hidden md:flex items-center">
+                    <a href="#join" class="bg-brand-navy text-white px-5 py-2 rounded-full font-medium hover:bg-brand-blue transition-colors shadow-sm">
+                        가입 신청
+                    </a>
+                </div>
+
+                <!-- 모바일 메뉴 버튼 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-brand-navy focus:outline-none">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 모바일 네비게이션 메뉴 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="#about" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-md">소개</a>
+                <a href="#meeting" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-md">모임 안내</a>
+                <a href="#activities" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-md">활동 내용</a>
+                <a href="#ai-assistant" class="block px-3 py-3 text-base font-bold text-amber-700 bg-amber-50 rounded-md flex items-center gap-2">
+                    <i class="ph-bold ph-sparkle text-brand-yellow"></i> AI 독서 도우미
+                </a>
+                <a href="#benefits" class="block px-3 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 rounded-md">혜택</a>
+                <a href="#join" class="block px-3 py-3 text-base font-bold text-brand-blue bg-blue-50 rounded-md mt-2">가입 신청하기</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. 메인 배너 (Hero Section) -->
+    <section class="hero-bg min-h-[90vh] flex items-center justify-center pt-16 relative overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-brand-yellow/20 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-white/20 text-white backdrop-blur-sm text-sm font-semibold tracking-wider mb-6 border border-white/30">
+                <i class="ph-bold ph-sparkle text-brand-yellow"></i> Gemini AI 지능형 독서 케어 탑재
+            </span>
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-6 leading-tight break-keep">
+                바쁜 일상 속, <br class="md:hidden" />
+                <span class="text-brand-yellow">지식과 소통</span>의 닻을 내리다.
+            </h1>
+            <p class="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto font-light break-keep">
+                망망대해 같은 일상에서 길을 잃었을 때, 책과 Gemini AI가 비추는 새로운 세상을 함께 탐험해 보시지 않겠습니까?
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#join" class="bg-brand-yellow text-brand-navy px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-400 transition-transform transform hover:-translate-y-1 shadow-lg flex items-center justify-center gap-2">
+                    지금 바로 가입하기 <i class="ph-bold ph-arrow-right"></i>
+                </a>
+                <a href="#ai-assistant" class="bg-white/10 text-white border border-white/30 px-8 py-4 rounded-full font-bold text-lg hover:bg-white/20 transition-colors backdrop-blur-sm flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-robot"></i> AI 도서 추천 체험
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+            <a href="#about" class="text-white/70 hover:text-white">
+                <i class="ph ph-caret-down text-3xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 3. 소개 섹션 (About Us) -->
+    <section id="about" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-sm font-bold text-brand-blue tracking-widest uppercase mb-2">동호회 목적 및 비전</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900">🎯 함께 성장하는 우리</h3>
+                <div class="w-20 h-1 bg-brand-yellow mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-50 rounded-2xl p-8 card-hover border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 text-brand-blue rounded-2xl flex items-center justify-center mb-6">
+                        <i class="ph-duotone ph-book-open text-3xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">지식의 확장</h4>
+                    <p class="text-gray-600 leading-relaxed break-keep">
+                        경영, 경제, 인문, 역사 등 다양한 분야의 독서를 통해 업무 역량을 강화하고 인문학적 소양을 깊이 있게 함양합니다.
+                    </p>
+                </div>
+                
+                <div class="bg-gray-50 rounded-2xl p-8 card-hover border border-gray-100">
+                    <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="ph-duotone ph-chats-circle text-3xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">소통과 화합</h4>
+                    <p class="text-gray-600 leading-relaxed break-keep">
+                        부서와 직급의 장벽을 넘어, 책을 매개로 자유롭게 소통하며 동료들과 끈끈하고 건강한 유대감을 형성합니다.
+                    </p>
+                </div>
+
+                <div class="bg-gray-50 rounded-2xl p-8 card-hover border border-gray-100">
+                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="ph-duotone ph-plant text-3xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">성장하는 조직 문화</h4>
+                    <p class="text-gray-600 leading-relaxed break-keep">
+                        개인의 꾸준한 학습과 지식 공유를 통해 (주)제주비 전체의 발전적이고 긍정적인 기업 문화를 조성하는 데 기여합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 모임 안내 섹션 (Meeting Info) -->
+    <section id="meeting" class="py-24 bg-brand-navy text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 opacity-10">
+            <i class="ph-fill ph-compass text-[400px]"></i>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="lg:w-1/2 w-full">
+                    <h2 class="text-sm font-bold text-brand-yellow tracking-widest uppercase mb-2">정기 모임 안내</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold mb-6">🗓️ 언제, 어디서 모이나요?</h3>
+                    <p class="text-gray-300 text-lg mb-8 leading-relaxed break-keep">
+                        바쁜 업무 중 잠시 숨을 고르는 시간. 매주 금요일, 점심시간을 활용하여 부담 없이 책 이야기를 나눕니다.
+                    </p>
+
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <div class="bg-white/10 p-3 rounded-xl shrink-0">
+                                <i class="ph-duotone ph-users text-2xl text-brand-yellow"></i>
+                            </div>
+                            <div>
+                                <strong class="block text-xl mb-1">대상</strong>
+                                <span class="text-gray-300">신입부터 임원까지, (주)제주비 임직원 누구나</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="bg-white/10 p-3 rounded-xl shrink-0">
+                                <i class="ph-duotone ph-calendar-check text-2xl text-brand-yellow"></i>
+                            </div>
+                            <div>
+                                <strong class="block text-xl mb-1">일시</strong>
+                                <span class="text-gray-300">매주 금요일 11:00 ~ 13:00 (점심시간 포함 2시간)</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="bg-white/10 p-3 rounded-xl shrink-0">
+                                <i class="ph-duotone ph-map-pin text-2xl text-brand-yellow"></i>
+                            </div>
+                            <div>
+                                <strong class="block text-xl mb-1">장소</strong>
+                                <span class="text-gray-300">사내 카페테리아 세미나실 (날씨 좋은 날엔 야외 테라스)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="lg:w-1/2 w-full">
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+                        <h4 class="text-xl font-bold mb-6 flex items-center gap-2 border-b border-white/10 pb-4">
+                            <i class="ph-fill ph-clock text-brand-yellow"></i> 모임 진행 순서
+                        </h4>
+                        
+                        <div class="relative border-l-2 border-white/20 ml-3 md:ml-4 space-y-8 pb-4">
+                            <div class="relative pl-6">
+                                <span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-brand-yellow shadow-[0_0_10px_#FFC300]"></span>
+                                <h5 class="text-lg font-bold text-white">11:00 ~ 12:00</h5>
+                                <p class="text-brand-yellow font-medium mt-1">발제 및 자유 토론</p>
+                                <p class="text-gray-400 text-sm mt-2">지정된 발제자가 이끄는 주제에 맞춰 편안하고 자유롭게 각자의 생각을 나눕니다.</p>
+                            </div>
+                            <div class="relative pl-6">
+                                <span class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-white"></span>
+                                <h5 class="text-lg font-bold text-white">12:00 ~ 13:00</h5>
+                                <p class="text-brand-yellow font-medium mt-1">점심 식사 & 네트워킹</p>
+                                <p class="text-gray-400 text-sm mt-2">회사에서 지원하는 맛있는 샌드위치/샐러드와 함께 동료들과 친목을 다집니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 주요 활동 섹션 (Activities) -->
+    <section id="activities" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-sm font-bold text-brand-blue tracking-widest uppercase mb-2">주요 활동 내용</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900">📚 우리는 이렇게 활동합니다</h3>
+                <div class="w-20 h-1 bg-brand-blue mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop" 
+                             alt="이달의 책 선정" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/415A77/FFFFFF?text=Book+Selection';">
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-2 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded mb-3">Activity 01</span>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">이달의 책 선정</h4>
+                        <p class="text-sm text-gray-600 break-keep">매월 마지막 주 모임에서 회원들의 추천과 투표를 통해 다음 달에 함께 읽을 도서를 선정합니다.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop" 
+                             alt="릴레이 발제" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/1B263B/FFFFFF?text=Presentation';">
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-2 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded mb-3">Activity 02</span>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">릴레이 발제</h4>
+                        <p class="text-sm text-gray-600 break-keep">회원들이 돌아가며 발제자가 되어 인상 깊었던 구절이나 토론 주제를 미리 준비하여 모임을 진행합니다.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=800&auto=format&fit=crop" 
+                             alt="독서 감상문 공유" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/FFC300/1B263B?text=Book+Review';">
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-2 py-1 bg-amber-50 text-amber-600 text-xs font-bold rounded mb-3">Activity 03</span>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">독서 감상문 공유</h4>
+                        <p class="text-sm text-gray-600 break-keep">게시판에 짧은 서평을 남겨, 모임에 참석하지 못한 직원들과도 인사이트를 활발히 공유합니다.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover group">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=800&auto=format&fit=crop" 
+                             alt="강연 및 문화 탐방" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/415A77/FFFFFF?text=Lecture+%26+Tour';">
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-2 py-1 bg-rose-50 text-rose-600 text-xs font-bold rounded mb-3">Activity 04</span>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">강연 & 문화 탐방</h4>
+                        <p class="text-sm text-gray-600 break-keep">저자 초청 강연 및 서점 탐방 등 책과 관련된 다양한 오프라인 문화 야외 활동을 진행합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. AI 독서 스마트 어시스턴트 (NEW: Gemini API Integration) -->
+    <section id="ai-assistant" class="py-24 bg-gradient-to-b from-slate-900 via-brand-navy to-slate-900 text-white relative overflow-hidden">
+        <!-- 배경 반짝임 요소 -->
+        <div class="absolute top-10 left-10 w-96 h-96 bg-blue-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-brand-yellow/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12">
+                <span class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-amber-400/20 text-brand-yellow text-sm font-bold mb-4 border border-amber-400/30">
+                    <i class="ph-bold ph-sparkle"></i> Gemini 3 Flash Preview 연동
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight">
+                    ✨ 등대 <span class="text-brand-yellow">AI 독서 스마트 어시스턴트</span>
+                </h2>
+                <p class="text-gray-300 mt-4 text-base md:text-lg max-w-2xl mx-auto">
+                    맞춤 도서 추천부터 모임 발제문 작성, 서평 정제까지! AI와 함께 더 깊이 있는 독서 생활을 시작해 보세요.
+                </p>
+            </div>
+
+            <!-- 탭 메뉴 -->
+            <div class="flex justify-center mb-8 border-b border-white/10 max-w-2xl mx-auto overflow-x-auto">
+                <button id="tab-recommend-btn" class="ai-tab-btn py-3 px-6 font-bold text-brand-yellow border-b-2 border-brand-yellow transition-colors flex items-center gap-2 whitespace-nowrap">
+                    <i class="ph-bold ph-compass"></i> 맞춤 도서 추천
+                </button>
+                <button id="tab-questions-btn" class="ai-tab-btn py-3 px-6 font-medium text-gray-400 hover:text-white border-b-2 border-transparent transition-colors flex items-center gap-2 whitespace-nowrap">
+                    <i class="ph-bold ph-chats-teardrop"></i> AI 발제문 생성
+                </button>
+                <button id="tab-review-btn" class="ai-tab-btn py-3 px-6 font-medium text-gray-400 hover:text-white border-b-2 border-transparent transition-colors flex items-center gap-2 whitespace-nowrap">
+                    <i class="ph-bold ph-pencil-line"></i> AI 서평 도우미
+                </button>
+            </div>
+
+            <!-- 탭 1: 맞춤 도서 추천 -->
+            <div id="tab-recommend" class="ai-tab-content max-w-4xl mx-auto">
+                <div class="bg-white/5 border border-white/15 rounded-3xl p-6 md:p-8 backdrop-blur-md">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-brand-yellow">
+                        <i class="ph-bold ph-magnifying-glass-plus"></i> 나만을 위한 AI 도서 큐레이션
+                    </h3>
+                    <p class="text-sm text-gray-300 mb-6">현재 직무, 관심 분야, 고민이나 기분을 알려주시면 Gemini AI가 어울리는 책 3권과 독서 포인트를 추천해 드립니다.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2">소속 부서 / 직무</label>
+                            <input type="text" id="ai-rec-dept" class="w-full bg-slate-800/80 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow text-sm" placeholder="예: 개발팀 / 마케팅 / 인사팀">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2">요즘 관심사 또는 고민</label>
+                            <input type="text" id="ai-rec-interest" class="w-full bg-slate-800/80 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow text-sm" placeholder="예: 리더십, 업무 생산성, 심리적 안정, AI 활용">
+                        </div>
+                    </div>
+
+                    <!-- 칩 빠른 선택 -->
+                    <div class="mb-6">
+                        <span class="text-xs text-gray-400 block mb-2">빠른 추천 키워드:</span>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" class="quick-chip bg-white/10 hover:bg-white/20 text-xs px-3 py-1.5 rounded-full text-gray-200 transition-colors">🚀 번아웃 극복과 리프레시</button>
+                            <button type="button" class="quick-chip bg-white/10 hover:bg-white/20 text-xs px-3 py-1.5 rounded-full text-gray-200 transition-colors">💡 트렌드 및 기술 혁신</button>
+                            <button type="button" class="quick-chip bg-white/10 hover:bg-white/20 text-xs px-3 py-1.5 rounded-full text-gray-200 transition-colors">🤝 인과관계와 커뮤니케이션</button>
+                            <button type="button" class="quick-chip bg-white/10 hover:bg-white/20 text-xs px-3 py-1.5 rounded-full text-gray-200 transition-colors">📈 커리어 성장과 리더십</button>
+                        </div>
+                    </div>
+
+                    <button id="btn-gen-recommend" class="w-full bg-gradient-to-r from-brand-yellow to-amber-500 text-brand-navy font-bold py-3.5 rounded-xl transition-all shadow-lg hover:brightness-110 flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-sparkle"></i> Gemini AI 추천 도서 보기
+                    </button>
+
+                    <!-- 결과 출력 영역 -->
+                    <div id="ai-rec-output" class="hidden mt-8 p-6 bg-slate-800/90 rounded-2xl border border-white/20 prose text-gray-100 max-w-none text-sm"></div>
+                </div>
+            </div>
+
+            <!-- 탭 2: AI 발제문 생성 -->
+            <div id="tab-questions" class="ai-tab-content hidden max-w-4xl mx-auto">
+                <div class="bg-white/5 border border-white/15 rounded-3xl p-6 md:p-8 backdrop-blur-md">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-brand-yellow">
+                        <i class="ph-bold ph-quotes"></i> 금요일 독서 모임 발제문 & 토론 질문 생성
+                    </h3>
+                    <p class="text-sm text-gray-300 mb-6">읽을 책이나 토론하고 싶은 주제를 입력하면 모임에서 바로 사용할 수 있는 깊이 있는 질문과 나눔 포인트를 생성해 드립니다.</p>
+
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2">도서명 / 지은이 (또는 모임 주제)</label>
+                            <input type="text" id="ai-q-book" class="w-full bg-slate-800/80 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow text-sm" placeholder="예: 원씽 (The One Thing) / 게리 켈러">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2">특별히 다루고 싶은 논점 (선택 사항)</label>
+                            <input type="text" id="ai-q-focus" class="w-full bg-slate-800/80 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow text-sm" placeholder="예: 직장 생활에서의 우선순위 적용, 워라밸과의 관계">
+                        </div>
+                    </div>
+
+                    <button id="btn-gen-questions" class="w-full bg-gradient-to-r from-brand-yellow to-amber-500 text-brand-navy font-bold py-3.5 rounded-xl transition-all shadow-lg hover:brightness-110 flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-chat-centered-dots"></i> 발제문 & 질문 가이드 생성하기
+                    </button>
+
+                    <div id="ai-q-output" class="hidden mt-8 p-6 bg-slate-800/90 rounded-2xl border border-white/20 prose text-gray-100 max-w-none text-sm"></div>
+                </div>
+            </div>
+
+            <!-- 탭 3: AI 서평 도우미 -->
+            <div id="tab-review" class="ai-tab-content hidden max-w-4xl mx-auto">
+                <div class="bg-white/5 border border-white/15 rounded-3xl p-6 md:p-8 backdrop-blur-md">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2 text-brand-yellow">
+                        <i class="ph-bold ph-note-pencil"></i> 사내 인트라넷용 서평 정제 도우미
+                    </h3>
+                    <p class="text-sm text-gray-300 mb-6">책을 읽고 느낀 간단한 메모나 생각을 자유롭게 적어주세요. 사내 서평 게시판에 바로 올릴 수 있는 깔끔한 독서 감상문으로 완성해 드립니다.</p>
+
+                    <div class="space-y-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2">도서 제목</label>
+                            <input type="text" id="ai-rev-book" class="w-full bg-slate-800/80 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow text-sm" placeholder="예: 도파민 네이션">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-300 mb-2">나의 메모 / 인상 깊었던 점 (두서없이 적으셔도 괜찮습니다)</label>
+                            <textarea id="ai-rev-notes" rows="4" class="w-full bg-slate-800/80 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-yellow text-sm resize-none" placeholder="고통과 즐거움의 균형이라는 개념이 새로웠음. 일할 때 스마트폰 계속 확인하던 습관을 줄여봐야겠다고 생각함..."></textarea>
+                        </div>
+                    </div>
+
+                    <button id="btn-gen-review" class="w-full bg-gradient-to-r from-brand-yellow to-amber-500 text-brand-navy font-bold py-3.5 rounded-xl transition-all shadow-lg hover:brightness-110 flex justify-center items-center gap-2">
+                        <i class="ph-bold ph-magic-wand"></i> AI 서평 다듬기
+                    </button>
+
+                    <div id="ai-rev-output" class="hidden mt-8 p-6 bg-slate-800/90 rounded-2xl border border-white/20 prose text-gray-100 max-w-none text-sm"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. 가입 혜택 섹션 (Benefits) -->
+    <section id="benefits" class="py-24 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-brand-blue to-brand-navy rounded-3xl p-8 md:p-12 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-1/4 translate-y-1/4">
+                    <i class="ph-fill ph-gift text-[250px]"></i>
+                </div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-8 flex items-center gap-3">
+                        <i class="ph-fill ph-gift text-brand-yellow"></i> 등대독서회만의 특별한 혜택
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm">
+                            <div class="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center text-brand-navy shrink-0">
+                                <i class="ph-bold ph-books text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">도서 구입비 전액 지원</h4>
+                                <p class="text-gray-200 text-sm mt-1">매월 선정된 도서를 구매하는 비용을 회사에서 전액 지원합니다.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm">
+                            <div class="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center text-brand-navy shrink-0">
+                                <i class="ph-bold ph-coffee text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">금요일 꿀맛 같은 점심 식사</h4>
+                                <p class="text-gray-200 text-sm mt-1">모임 당일, 프리미엄 샌드위치 및 샐러드 등 든든한 식사를 제공합니다.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-xl border border-white/20 backdrop-blur-sm">
+                            <div class="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center text-brand-navy shrink-0">
+                                <i class="ph-bold ph-medal text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">연말 우수 회원 빵빵한 포상</h4>
+                                <p class="text-gray-200 text-sm mt-1">'다독왕', '최고의 발제자'에게 문화상품권, e-book 리더기 등을 선물합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. 가입 신청 및 푸터 (Join & Footer) -->
+    <section id="join" class="py-24 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-16">
+            
+            <div class="lg:w-5/12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">🤝 함께 항해를 시작해 볼까요?</h2>
+                <p class="text-lg text-gray-600 mb-8 break-keep">
+                    신입사원부터 임원진까지, 책을 사랑하는 (주)제주비 임직원이라면 누구나 언제든 환영합니다! 아래 폼을 작성해주시면 담당자가 확인 후 안내 메일을 드립니다.
+                </p>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mt-8">
+                    <h4 class="font-bold text-gray-900 mb-4 border-b pb-2">문의처 안내 (인사팀)</h4>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-envelope-simple text-brand-blue"></i> 이메일: hhadainn@gmail.com
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="ph-fill ph-clock text-brand-blue"></i> 상시 모집 중
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="lg:w-7/12">
+                <form id="join-form" class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">이름 <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="이름" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors outline-none" placeholder="가상 이름 사용 가능">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">이메일 <span class="text-red-500">*</span></label>
+                            <input type="email" id="email" name="이메일" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors outline-none" placeholder="example@jejubi.co.kr">
+                        </div>
+                        <div>
+                            <label for="dept" class="block text-sm font-medium text-gray-700 mb-2">소속 부서 <span class="text-red-500">*</span></label>
+                            <input type="text" id="dept" name="소속 부서" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors outline-none" placeholder="가상 부서명 가능">
+                        </div>
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700 mb-2">직책</label>
+                            <input type="text" id="role" name="직책" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors outline-none" placeholder="선택 사항">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="purpose" class="block text-sm font-medium text-gray-700 mb-2">참가 목적</label>
+                        <textarea id="purpose" name="참가 목적" rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors outline-none resize-none" placeholder="독서회 참가 목적을 자유롭게 적어주세요. (선택)"></textarea>
+                    </div>
+
+                    <div class="mb-8">
+                        <fieldset>
+                            <legend class="block text-sm font-medium text-gray-700 mb-3">개인정보 동의 <span class="text-red-500">*</span></legend>
+                            <div class="flex flex-col sm:flex-row gap-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="개인정보 동의" value="동의" required class="w-4 h-4 text-brand-blue focus:ring-brand-blue border-gray-300">
+                                    <span class="text-gray-700 font-medium">동의</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="개인정보 동의" value="동의하지 않음" required class="w-4 h-4 text-brand-blue focus:ring-brand-blue border-gray-300">
+                                    <span class="text-gray-700 font-medium">동의하지 않음</span>
+                                </label>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-3 flex items-start gap-1">
+                                <i class="ph-fill ph-info text-brand-blue mt-0.5"></i>
+                                최소 수집 운영에 필요하지 않은 주민등록번호·휴대전화번호·주소는 수집하지 않습니다.
+                            </p>
+                        </fieldset>
+                    </div>
+
+                    <button type="submit" class="w-full bg-brand-navy hover:bg-brand-blue text-white font-bold py-4 rounded-xl transition-colors shadow-md flex justify-center items-center gap-2 text-lg">
+                        <i class="ph-bold ph-paper-plane-tilt"></i> 가입 신청서 제출하기
+                    </button>
+                    
+                    <div id="success-message" class="hidden mt-4 p-4 bg-green-50 text-green-700 rounded-lg text-center font-medium border border-green-200">
+                        🎉 가입 신청이 완료되었습니다! 담당자가 곧 연락드리겠습니다.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="bg-brand-navy text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2 opacity-50 grayscale">
+                <i class="ph-fill ph-lighthouse text-2xl"></i>
+                <span class="font-bold text-lg tracking-tight">등대독서회</span>
+            </div>
+            
+            <div class="text-sm text-center md:text-left">
+                <p>본 페이지는 (주)제주비 사내 동호회 홍보용 웹페이지입니다.</p>
+                <p class="mt-1">Copyright ⓒ 2026 (주)제주비 등대독서회. All rights reserved.</p>
+            </div>
+            
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-white transition-colors"><i class="ph-fill ph-globe text-xl"></i> 사내 인트라넷</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 9. 플로팅 AI 상담원 챗봇 (NEW: Floating Gemini Chat Widget) -->
+    <div id="ai-chat-widget" class="fixed bottom-6 right-6 z-50">
+        <!-- 토글 버튼 -->
+        <button id="ai-chat-toggle" class="w-14 h-14 bg-gradient-to-r from-amber-400 to-brand-yellow text-brand-navy rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform active:scale-95 border-2 border-white focus:outline-none">
+            <i id="ai-chat-icon-open" class="ph-bold ph-robot text-2xl"></i>
+            <i id="ai-chat-icon-close" class="ph-bold ph-x text-2xl hidden"></i>
+        </button>
+
+        <!-- 챗봇 창 -->
+        <div id="ai-chat-box" class="hidden absolute bottom-18 right-0 w-[90vw] sm:w-[380px] h-[520px] bg-white rounded-3xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
+            <!-- 챗봇 헤더 -->
+            <div class="bg-gradient-to-r from-brand-navy to-brand-blue p-4 text-white flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-brand-yellow text-brand-navy rounded-full flex items-center justify-center font-bold text-lg">
+                        <i class="ph-bold ph-lighthouse"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">등대 AI 라이브러리언</h4>
+                        <span class="text-xs text-amber-300 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-green-400 inline-block animate-pulse"></span> Gemini 3 Flash 응답 중
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 대화 내역 메시지 영역 -->
+            <div id="ai-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50 text-sm">
+                <div class="flex gap-2">
+                    <div class="w-7 h-7 bg-brand-yellow text-brand-navy rounded-full flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-gray-200 text-gray-800 shadow-sm max-w-[85%]">
+                        안녕하세요! (주)제주비 등대독서회의 AI 매니저입니다. 📚<br>모임 일정, 도서 추천, 혜택 등 궁금한 점을 편하게 물어보세요!
+                    </div>
+                </div>
+            </div>
+
+            <!-- 빠른 질문 칩 -->
+            <div class="p-2 bg-white border-t border-gray-100 flex gap-1.5 overflow-x-auto text-xs shrink-0">
+                <button class="chat-quick-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors">🗓️ 모임 언제인가요?</button>
+                <button class="chat-quick-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors">🎁 혜택이 궁금해요</button>
+                <button class="chat-quick-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-2.5 py-1 rounded-full whitespace-nowrap transition-colors">📖 직장인 추천도서</button>
+            </div>
+
+            <!-- 입력 창 -->
+            <div class="p-3 bg-white border-t border-gray-200 flex gap-2 shrink-0">
+                <input type="text" id="ai-chat-input" class="flex-1 border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-brand-blue" placeholder="질문을 입력하세요..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="bg-brand-navy hover:bg-brand-blue text-white px-3.5 py-2 rounded-xl transition-colors shrink-0">
+                    <i class="ph-bold ph-paper-plane-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 자바스크립트 로직 (Gemini API 연동 포함) -->
+    <script>
+        // ==========================================
+        // 1. Gemini API 연동 모듈 (Exponential Backoff 적용)
+        // ==========================================
+        async function callGemini(userQuery, systemPrompt = "") {
+            // Gemini 3 Flash Preview API Key (Leave empty for runtime injection)
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }]
+            };
+
+            if (systemPrompt) {
+                payload.systemInstruction = {
+                    parts: [{ text: systemPrompt }]
+                };
+            }
+
+            let attempts = 0;
+            const maxAttempts = 3;
+            let delay = 1000;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API HTTP Error: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!text) {
+                        throw new Error('응답 데이터를 찾을 수 없습니다.');
+                    }
+                    return text;
+                } catch (error) {
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        throw error;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ==========================================
+            // 2. AI 스마트 어시스턴트 탭 처리
+            // ==========================================
+            const tabs = [
+                { btn: 'tab-recommend-btn', content: 'tab-recommend' },
+                { btn: 'tab-questions-btn', content: 'tab-questions' },
+                { btn: 'tab-review-btn', content: 'tab-review' }
+            ];
+
+            tabs.forEach(({ btn, content }) => {
+                const btnEl = document.getElementById(btn);
+                btnEl.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        const b = document.getElementById(t.btn);
+                        const c = document.getElementById(t.content);
+                        if (t.btn === btn) {
+                            b.classList.add('text-brand-yellow', 'border-brand-yellow', 'font-bold');
+                            b.classList.remove('text-gray-400', 'border-transparent', 'font-medium');
+                            c.classList.remove('hidden');
+                        } else {
+                            b.classList.remove('text-brand-yellow', 'border-brand-yellow', 'font-bold');
+                            b.classList.add('text-gray-400', 'border-transparent', 'font-medium');
+                            c.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // 빠른 키워드 칩 클릭 이벤트
+            document.querySelectorAll('.quick-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.getElementById('ai-rec-interest').value = chip.textContent.replace(/^[\s\S]*?\s/, '');
+                });
+            });
+
+            // ------------------------------------------
+            // AI 기능 1: 도서 추천 받기
+            // ------------------------------------------
+            document.getElementById('btn-gen-recommend').addEventListener('click', async () => {
+                const dept = document.getElementById('ai-rec-dept').value || '직장인';
+                const interest = document.getElementById('ai-rec-interest').value || '자기계발 및 리더십';
+                const outputEl = document.getElementById('ai-rec-output');
+
+                outputEl.classList.remove('hidden');
+                outputEl.innerHTML = '<div class="flex items-center gap-2 text-brand-yellow"><i class="ph-bold ph-spinner animate-spin text-xl"></i> Gemini AI가 맞춤 도서를 탐색하고 있습니다...</div>';
+
+                const systemPrompt = `당신은 (주)제주비 사내 독서동호회 '등대독서회'의 수석 AI 도서 큐레이터입니다.
+직장인의 소속 부서와 관심사를 바탕으로 읽으면 큰 도움이 될 책 3권을 추천하세요.
+각 추천 책마다 다음 항목을 한국어로 명확히 마크다운(Markdown)으로 작성하세요:
+1. 도서명 및 저자
+2. 추천 이유 (해당 직무/관심사와 연계)
+3. 핵심 독서 포인트
+4. 독서 모임에서 이야기 나누기 좋은 주제 1가지`;
+
+                const userPrompt = `소속/직무: ${dept}\n관심사/고민: ${interest}\n\n위 직장인에게 꼭 맞는 도서 3권을 추천해 주세요.`;
+
+                try {
+                    const responseText = await callGemini(userPrompt, systemPrompt);
+                    outputEl.innerHTML = marked.parse(responseText);
+                } catch (err) {
+                    console.error(err);
+                    outputEl.innerHTML = '<div class="text-red-400">⚠️ 도서 추천 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</div>';
+                }
+            });
+
+            // ------------------------------------------
+            // AI 기능 2: 발제문 & 질문 생성기
+            // ------------------------------------------
+            document.getElementById('btn-gen-questions').addEventListener('click', async () => {
+                const book = document.getElementById('ai-q-book').value;
+                const focus = document.getElementById('ai-q-focus').value;
+                const outputEl = document.getElementById('ai-q-output');
+
+                if (!book) {
+                    outputEl.classList.remove('hidden');
+                    outputEl.innerHTML = '<div class="text-amber-300">💡 도서명이나 토론 주제를 입력해 주세요!</div>';
+                    return;
+                }
+
+                outputEl.classList.remove('hidden');
+                outputEl.innerHTML = '<div class="flex items-center gap-2 text-brand-yellow"><i class="ph-bold ph-spinner animate-spin text-xl"></i> Gemini AI가 금요일 토론 발제문을 준비하고 있습니다...</div>';
+
+                const systemPrompt = `당신은 (주)제주비 사내 독서동호회 '등대독서회'의 토론 진행 퍼실리테이터입니다.
+지정된 책이나 주제를 바탕으로 금요일 점심 독서모임(1시간 토론)에서 바로 활용할 수 있는 뛰어난 발제문 가이드를 만드세요.
+포함할 구성 요소 (마크다운 포맷):
+1. [모임 개요] 핵심 테마 한 줄 요약
+2. [아이스브레이킹 질문] (1가지)
+3. [본격적인 토론 질문] (깊이 있는 질문 3가지 - 직장 생활 및 개인적 성찰 연계)
+4. [발제자 팁] 모임을 매끄럽게 이끄는 진행 요령`;
+
+                const userPrompt = `도서명/주제: ${book}\n특이 주안점: ${focus || '없음'}`;
+
+                try {
+                    const responseText = await callGemini(userPrompt, systemPrompt);
+                    outputEl.innerHTML = marked.parse(responseText);
+                } catch (err) {
+                    console.error(err);
+                    outputEl.innerHTML = '<div class="text-red-400">⚠️ 발제문 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</div>';
+                }
+            });
+
+            // ------------------------------------------
+            // AI 기능 3: 서평 도우미
+            // ------------------------------------------
+            document.getElementById('btn-gen-review').addEventListener('click', async () => {
+                const book = document.getElementById('ai-rev-book').value;
+                const notes = document.getElementById('ai-rev-notes').value;
+                const outputEl = document.getElementById('ai-rev-output');
+
+                if (!notes) {
+                    outputEl.classList.remove('hidden');
+                    outputEl.innerHTML = '<div class="text-amber-300">💡 메모나 인상 깊었던 내용을 자유롭게 입력해 주세요!</div>';
+                    return;
+                }
+
+                outputEl.classList.remove('hidden');
+                outputEl.innerHTML = '<div class="flex items-center gap-2 text-brand-yellow"><i class="ph-bold ph-spinner animate-spin text-xl"></i> Gemini AI가 사내 게시판용 서평을 다듬고 있습니다...</div>';
+
+                const systemPrompt = `당신은 글쓰기 및 서평 전문 에디터입니다.
+사용자가 남긴 두서없는 감상 메모를 (주)제주비 사내 인트라넷 독서 게시판에 등록하기 좋은 깔끔하고 가독성 높은 '독서 감상문'으로 재구성하세요.
+마크다운 형식으로 아래와 같이 구성해 주세요:
+- 제목: 감각적인 서평 제목
+- [책을 읽게 된 계기 / 인상 깊었던 구절]
+- [핵심 깨달음과 내 삶/업무 적용점]
+- [한 줄 총평]`;
+
+                const userPrompt = `도서명: ${book || '독서 감상 도서'}\n사용자 작성 메모: ${notes}`;
+
+                try {
+                    const responseText = await callGemini(userPrompt, systemPrompt);
+                    outputEl.innerHTML = marked.parse(responseText);
+                } catch (err) {
+                    console.error(err);
+                    outputEl.innerHTML = '<div class="text-red-400">⚠️ 서평 다듬기 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.</div>';
+                }
+            });
+
+            // ==========================================
+            // 3. 플로팅 AI 챗봇 토글 및 대화 로직
+            // ==========================================
+            const chatToggle = document.getElementById('ai-chat-toggle');
+            const chatBox = document.getElementById('ai-chat-box');
+            const iconOpen = document.getElementById('ai-chat-icon-open');
+            const iconClose = document.getElementById('ai-chat-icon-close');
+
+            chatToggle.addEventListener('click', () => {
+                chatBox.classList.toggle('hidden');
+                iconOpen.classList.toggle('hidden');
+                iconClose.classList.toggle('hidden');
+            });
+
+            document.querySelectorAll('.chat-quick-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.getElementById('ai-chat-input').value = btn.textContent;
+                    sendChatMessage();
+                });
+            });
+
+            // ==========================================
+            // 4. 모바일 메뉴 및 기존 가입 폼 로직
+            // ==========================================
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            // 가입 폼 제출
+            const joinForm = document.getElementById('join-form');
+            const successMessage = document.getElementById('success-message');
+            const submitBtn = joinForm.querySelector('button[type="submit"]');
+
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxnU1FkLLO0O18Blw1plPGEcDuVDCpebmKLzOfCaSFAQDi7EZFw9B1fDUxs23FPws0J/exec';
+
+            joinForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> 저장 중...';
+                submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+                const formData = new FormData(joinForm);
+                const data = {};
+                formData.forEach((value, key) => { data[key] = value; });
+
+                try {
+                    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                        await fetch(APPS_SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify(data)
+                        });
+                    } else {
+                        await new Promise(resolve => setTimeout(resolve, 1200));
+                    }
+
+                    joinForm.reset();
+                    successMessage.classList.remove('hidden');
+                    setTimeout(() => successMessage.classList.add('hidden'), 5000);
+
+                } catch (error) {
+                    console.error('구글 시트 저장 실패:', error);
+                    // alert 사용 금지: 인라인 안내 메시지 사용
+                    const errBox = document.createElement('div');
+                    errBox.className = 'mt-3 p-3 bg-red-100 text-red-700 rounded-lg text-sm';
+                    errBox.textContent = '신청서 제출 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+                    joinForm.appendChild(errBox);
+                    setTimeout(() => errBox.remove(), 4000);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                }
+            });
+        });
+
+        // 챗봇 메시지 전송 함수
+        async function sendChatMessage() {
+            const inputEl = document.getElementById('ai-chat-input');
+            const messagesEl = document.getElementById('ai-chat-messages');
+            const userMsg = inputEl.value.trim();
+
+            if (!userMsg) return;
+
+            // 1. 유저 메시지 렌더링
+            const userBubble = document.createElement('div');
+            userBubble.className = 'flex justify-end gap-2';
+            userBubble.innerHTML = `<div class="bg-brand-blue text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] shadow-sm">${userMsg}</div>`;
+            messagesEl.appendChild(userBubble);
+
+            inputEl.value = '';
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            // 2. AI 대기 스피너 렌더링
+            const aiBubble = document.createElement('div');
+            aiBubble.className = 'flex gap-2';
+            aiBubble.innerHTML = `
+                <div class="w-7 h-7 bg-brand-yellow text-brand-navy rounded-full flex items-center justify-center text-xs font-bold shrink-0">AI</div>
+                <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-gray-200 text-gray-600 shadow-sm flex items-center gap-2 max-w-[85%]">
+                    <i class="ph-bold ph-spinner animate-spin text-brand-blue"></i> 답변을 생각하는 중입니다...
+                </div>
+            `;
+            messagesEl.appendChild(aiBubble);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            const systemPrompt = `당신은 (주)제주비 사내 동호회 '등대독서회'의 친절하고 상냥한 AI 안내 매니저입니다.
+[동호회 주요 정보]
+- 참가대상: (주)제주비 임직원 누구나
+- 정기모임: 매주 금요일 11:00 ~ 13:00 (점심시간 포함)
+- 장소: 사내 카페테리아 세미나실 (날씨 좋을 땐 야외 테라스)
+- 혜택: 도서 구입비 전액 지원, 금요일 프리미엄 점심 식사(샌드위치/샐러드) 제공, 연말 다독왕/최고 발제자 포상
+- 가입방법: 홈페이지 하단 [가입 신청] 폼 작성
+질문에 대해 친절하고 위트 있게 답변해 주세요.`;
+
+            try {
+                const aiResponse = await callGemini(userMsg, systemPrompt);
+                const bubbleText = aiBubble.querySelector('.bg-white');
+                bubbleText.className = "bg-white p-3 rounded-2xl rounded-tl-none border border-gray-200 text-gray-800 shadow-sm max-w-[85%] prose text-xs";
+                bubbleText.innerHTML = marked.parse(aiResponse);
+            } catch (err) {
+                console.error(err);
+                const bubbleText = aiBubble.querySelector('.bg-white');
+                bubbleText.textContent = '죄송합니다. 응답 생성 중 오류가 발생했습니다. 잠시 후 다시 질문해 주세요!';
+            }
+
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+    </script>
+</body>
+</html>
