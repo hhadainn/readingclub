@@ -677,7 +677,7 @@
         async function callGemini(userQuery, systemPrompt = "") {
             // Gemini 3 Flash Preview API Key (Leave empty for runtime injection)
             const apiKey = "AQ.Ab8RN6LyeVC-ErORXrudIVzenH79m0ABXFJHVPpy3B4_AHbmwQ";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
             const payload = {
                 contents: [{ parts: [{ text: userQuery }] }]
